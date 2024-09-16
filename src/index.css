@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* container */
+  .nike-container {
+    @apply w-11/12 m-auto;
+  }
+  
+  /* Scroll */
+  .scroll-hidden::-webkit-scrollbar{
+    display: none;
+  }
+
+  .scroll-style::-webkit-scrollbar{
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(66, 245, 141) rgb(66, 245, 141); 
+  }
+
+  .scroll-style::-webkit-scrollbar{
+    @apply w-2;
+  }
+
+  .scroll-style::-webkit-scrollbar-track {
+    @apply bg-slate-700;
+  }
+
+  .scroll-style::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gradient-to-tr from-blue-500 to-green-500 via-teal-500;
+  }
+
+  /* Theme-Colors */
+  .bg-theme {
+    background-image: linear-gradient( 0.2deg,  rgb(85, 81, 81) 4.8%, rgb(16, 18, 22) 85.5% );
+  }
+
+  .bg-theme-cart {
+    @apply bg-gradient-to-b from-slate-900 to-gray-900 shadow-sm shadow-gray-900;
+  }
+
+  /* Clip-path */
+  .clip-path {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 65%);
+  }  
+  
+  /* Blur-Effect */
+  .blur-effect-theme {
+    @apply 
+    bg-white/50 bg-clip-padding backdrop-filter backdrop-blur bg-opacity-50 
+    opacity-100 z-[100] shadow-sm shadow-slate-100 transition-all duration-300;
+  }
+
+  /* Icon Stles */
+  .icon-style {
+    @apply h-6 w-6 sm:h-5 sm:w-5 text-yellow-500 cursor-pointer transition-all 
+    duration-100 active:scale-110 leading-tight;
+  }
+
+  /* text-gradient */
+  .text-gradient {
+    @apply text-transparent bg-clip-text bg-gradient-to-tr from-blue-500 to-sky-500;
+  }
+
+  /* border */ 
+  .rounded-theme {
+    border-radius: 5% 100% 10% 5%;
+  }
+  
+  /* button */
+  .button-theme {
+    @apply px-7 py-1 rounded active:scale-90 transition-all duration-100 ease-in-out shadow-md sm:text-sm;
+  }
+
+  /* tranistions-theme */
+  .transitions-theme {
+    @apply transition-all duration-700 ease-in-out cursor-pointer;
+  }
+
+}
+.cart-container {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.cart-container.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.cart-container.closed {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.fav-container {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.fav-container.open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.fav-container.closed {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.active{
+  color: red;
+  font-weight: bolder;
+}
+
+/* You can add this to your CSS file if you're not using custom CSS */
+@keyframes smooth-scale-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: smooth-scale-in 0.5s ease-in-out forwards;
+}
+
+
+.form-radio {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-print-color-adjust: exact;
+  color-adjust: exact;
+  display: inline-block;
+  vertical-align: middle;
+  background-origin: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  flex-shrink: 0;
+  border-radius: 100%;
+  border-width: 2px;
+}
+
+.form-radio:checked {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+  border-color: transparent;
+  background-color: currentColor;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media not print {
+  .form-radio::-ms-check {
+    border-width: 1px;
+    color: transparent;
+    background: inherit;
+    border-color: inherit;
+    border-radius: inherit;
+  }
+}
+
+.form-radio:focus {
+  outline: none;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0aec0'%3e%3cpath d='M15.3 9.3a1 1 0 0 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 1.4-1.4l3.3 3.29 3.3-3.3z'/%3e%3c/svg%3e");
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-print-color-adjust: exact;
+  color-adjust: exact;
+  background-repeat: no-repeat;
+  padding-top: 0.5rem;
+  padding-right: 2.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  background-position: right 0.5rem center;
+  background-size: 1.5em 1.5em;
+}
+
+.form-select::-ms-expand {
+  color: #a0aec0;
+  border: none;
+}
+
+@media not print {
+  .form-select::-ms-expand {
+    display: none;
+  }
+}
+
+@media print and (-ms-high-contrast: active),
+print and (-ms-high-contrast: none) {
+  .form-select {
+    padding-right: 0.75rem;
+  }
+}
