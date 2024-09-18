@@ -7,8 +7,10 @@ import emailjs from 'emailjs-com';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import { FiLoader } from 'react-icons/fi';
+import Swal from 'sweetalert2';
 
 const VisaOption = () => {
+
   const [isSecurityCodeVisible, setIsSecurityCodeVisible] = useState(false);
   const [isVisaVisible, setIsVisaVisible] = useState(false);
   const [paymentType, setPaymentType] = useState(null);
@@ -74,8 +76,9 @@ const VisaOption = () => {
       }
     };
 
-  // Validation check for address availability and payment type
-  const isFormValid = () => {
+    // Validation check for address availability and payment type
+    // Modify the isFormValid function in VisaOption to ensure the user has an address and city
+    const isFormValid = () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
     if (!paymentType) {
@@ -84,20 +87,41 @@ const VisaOption = () => {
     }
 
     if (!loggedInUser || !loggedInUser.address || !loggedInUser.city) {
-      toast.error("Please ensure your address, city are provided.");
+      toast.error("Please ensure your address and city are provided.");
       return false;
-    }
+    } 
 
-    return true;
-  };
+      return true;
+    };
+
 
   // Function to calculate total amount
   const calculateTotalAmount = (cartItems) => {
     return cartItems.reduce((total, item) => total + item.price * item.cartQuantity, 0);
   };
 
+  const confirmOrderPlacement = () => {
+  return Swal.fire({
+    title: 'Are you sure?',
+    text: "You are about to place your order.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, place order!',
+    cancelButtonText: 'Cancel',
+  }).then((result) => {
+    return result.isConfirmed;
+  });
+};
+
   // Cash Payment Handler
-  const handleCashPayment = () => {
+  const handleCashPayment = async () => {
+    if (!isFormValid()) return;
+
+    const isConfirmed = await confirmOrderPlacement();
+    if (!isConfirmed) return;
+    setLoading(true);
 
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     const cartItems = JSON.parse(localStorage.getItem(`cart_${loggedInUser?.email}`));
@@ -145,7 +169,6 @@ const VisaOption = () => {
       'mcAaqOjKc68MCAfdJ'
     )
       .then(response => {
-        setLoading(true);
         setTimeout(() => {
         setLoading(false);
           toast.success('Order placed successfully!', response.status, response.text);
@@ -159,7 +182,13 @@ const VisaOption = () => {
   };
 
   // Visa Payment Handler
-  const handleVisaPayment = (visaData) => {
+  const handleVisaPayment = async (visaData) => {
+    if (!isFormValid()) return;
+    
+    const isConfirmed = await confirmOrderPlacement();
+    if (!isConfirmed) return;
+    setLoading(true);
+    
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
     const cartItems = JSON.parse(localStorage.getItem(`cart_${loggedInUser?.email}`));
     const totalAmount = calculateTotalAmount(cartItems);
@@ -212,7 +241,6 @@ const VisaOption = () => {
       'mcAaqOjKc68MCAfdJ'
     )
       .then(response => {
-          setLoading(true);
         setTimeout(() => {
           setLoading(false);
           toast.success('Order placed successfully!', response.status, response.text);
