@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { HeartIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import logo from '../../public/Logo-1.png';
-import { setOpenCart, selectTotalQTY, setClearCartItems, selectCartItems } from '../app/CartSlice.js';
+import { setOpenCart, setClearCartItems, selectCartItems } from '../app/CartSlice.js';
 import { setOpenFav, selectTotalQTYFav, setClearFavItems } from '../app/FavSlice.js';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaRegUser } from 'react-icons/fa';
-import { AiOutlineLogout } from "react-icons/ai";
 import { LuLogOut } from "react-icons/lu";
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
@@ -24,27 +23,27 @@ const Navbar = () => {
   const user = localStorage.getItem("loggedInUser");
 
 
-const handleLogout = () => {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "You will be logged out!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, logout!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setTimeout(() => {
-        dispatch(setClearCartItems());
-        dispatch(setClearFavItems());
-        localStorage.removeItem('loggedInUser');
-        navigate('/login'); 
-        toast.success('Logged out successfully');
-      }, 1500);
-    }
-  });
-};
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You will be logged out!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, logout!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setTimeout(() => {
+          dispatch(setClearCartItems());
+          dispatch(setClearFavItems());
+          localStorage.removeItem('loggedInUser');
+          navigate('/login'); 
+          toast.success('Logged out successfully');
+        }, 1500);
+      }
+    });
+  };
 
   const onCartToggle = () => {
     dispatch(setOpenCart({ cartState: true }));
@@ -78,47 +77,51 @@ const handleLogout = () => {
 
 
           {user ? <>
-          <ul className={`absolute top-[53px] left-0 flex w-full flex-col items-center justify-center gap-3 transition-all 
-            duration-300 blur-effect-theme rounded-sm ${menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-            <li className='text-white font-bold'>
-              <NavLink to='' onClick={() => setMenuOpen(false)}>
+            <ul className={`absolute ${navState && 'text-slate-800'} top-[53px] left-0 flex w-full flex-col 
+            items-center justify-center gap-3 transition-all mt-2
+            duration-300 blur-effect-theme py-2 rounded-sm
+            ${menuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+            <li className='min-w-[120px] text-center px-4 py-2 rounded-md bg-black text-white'>
+                <NavLink to=''
+                  onClick={() => setMenuOpen(false)}>
                 Home
               </NavLink>
             </li>
-            <li className='text-white'>
+            <li className='min-w-[120px] text-center px-4 py-2 rounded-md bg-black text-white'>
               <NavLink to='/products' onClick={() => setMenuOpen(false)}>
                 Products
               </NavLink>
             </li>
-            <li className='text-white'>
+            <li className='min-w-[120px] text-center px-4 py-2 rounded-md bg-black text-white'>
               <NavLink to='/story' onClick={() => setMenuOpen(false)}>
                 Blogs
               </NavLink>
             </li>
-            <li className='text-white'>
+            <li className='min-w-[120px] text-center px-4 py-2 rounded-md bg-black text-white'>
               <NavLink to='/featured' onClick={() => setMenuOpen(false)}>
                 Featured
               </NavLink>
             </li>
-          </ul>
+           </ul>
 
-          <ul className={`flex flex-row items-center justify-center gap-3 sm:hidden`}>
-            <li className='text-white font-bold'>
+            <ul className={`text-white ${navState && 'text-slate-800'}  
+          flex flex-row items-center justify-center gap-3 sm:hidden`}>
+            <li>
               <NavLink to='' onClick={() => setMenuOpen(false)}>
                 Home
               </NavLink>
             </li>
-            <li className='text-white'>
+            <li >
               <NavLink to='/products' onClick={() => setMenuOpen(false)}>
                 Products
               </NavLink>
             </li>
-            <li className='text-white'>
+            <li >
               <NavLink to='/story' onClick={() => setMenuOpen(false)}>
                 Blogs
               </NavLink>
             </li>
-            <li className='text-white'>
+            <li >
               <NavLink to='/featured' onClick={() => setMenuOpen(false)}>
                 Featured
               </NavLink>
@@ -134,7 +137,7 @@ const handleLogout = () => {
               type="button" 
               className="border-none top-[3px] text-[17px] outline-none active:scale-110 transition-all 
               duration-300 relative text-white">
-              <LuLogOut className={`icon-style 'text-red-900 transition-all duration-300`} />
+              <LuLogOut className={`icon-style ${navState && 'text-slate-900'}`} />
                 </button>
             </li> : ''}
 
@@ -144,7 +147,7 @@ const handleLogout = () => {
               type="button" 
               className="border-none top-[5px] text-[17px] outline-none active:scale-110 transition-all 
               duration-300 relative">
-              <FaRegUser className={`icon-style 'text-red-900 transition-all duration-300`} />
+              <FaRegUser className={`icon-style ${navState && 'text-slate-900'}`} />
                 </button>
               </Link>
             </li>
@@ -171,11 +174,11 @@ const handleLogout = () => {
             </li>
 
             <button
-            className='sm:block hidden p-2 text-white'
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <IoCloseSharp className='icon-style'/> : <GiHamburgerMenu className='icon-style'/>}
-          </button>
+            className='sm:block hidden mt-2 text-white'
+            onClick={() => setMenuOpen(!menuOpen)}>
+                {menuOpen ? <IoCloseSharp className={`icon-style text-[16px] ${navState && 'text-slate-900'}`} /> :
+                  <GiHamburgerMenu className={`icon-style text-[16px] ${navState && 'text-slate-900'}`} />}
+            </button>
             </> : ''}
           </ul>
         </nav>
