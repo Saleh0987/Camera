@@ -14,6 +14,9 @@ export {default as ProductDetails} from "./ProductDetails.jsx";
 export { default as ProtectedRoute } from "./ProtectedRoute.jsx";
 export { default as Profile } from "./Profile.jsx";
 export {default as Checkout} from "./Checkout.jsx";
-export {default as PaymentSuccess} from "./PaymentSuccess.jsx";
+export { default as PaymentSuccess } from "./PaymentSuccess.jsx";
+export {default as ForgetPass} from "./ForgetPass.jsx";
+export {default as NewPass} from "./NewPass.jsx";
+
 
 

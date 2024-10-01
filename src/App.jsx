@@ -13,7 +13,9 @@ import {
   ProtectedRoute,
   Profile,
   Checkout,
-  PaymentSuccess
+  PaymentSuccess,
+  ForgetPass,
+  NewPass
 } from './components';
 import {heroapi, popularsales, toprateslaes, highlight, sneaker, story} from './data/data.js'
 import { Toaster } from 'react-hot-toast';
@@ -84,6 +86,9 @@ let routers = createBrowserRouter([
     },
     {path:'login', element: <Login />},
     { path: 'register', element: <Register /> },
+    { path: 'forgetpass', element: <ForgetPass /> },
+    { path: 'newpass', element: <NewPass /> },
+
     
     {path: '*', element: <Notfound /> },
     

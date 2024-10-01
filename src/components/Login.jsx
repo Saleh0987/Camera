@@ -117,7 +117,7 @@ const formik = useFormik({
           </button>
 
           <div className="flex sm:flex-col gap-2 flex-row justify-between mt-4">
-            <Link className="text-sm ml-2 text-blue-800 hover:text-blue-500 cursor-pointer duration-500 transition-all">
+            <Link to={'/forgetpass'} className="text-sm ml-2 text-blue-800 hover:text-blue-500 cursor-pointer duration-500 transition-all">
               Forgot Password ?
             </Link>
             <Link to={'/register'} className="text-sm ml-2 text-blue-800 hover:text-blue-500 cursor-pointer duration-500 transition-all">

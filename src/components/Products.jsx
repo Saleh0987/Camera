@@ -20,11 +20,11 @@ const Products = ({ ifExists, endpoint: { title, items } }) => {
   };
 
   const showMoreItems = () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     setTimeout(() => {
-      setVisibleItemsCount(items.length); 
-      setIsLoading(false); 
-    }, 3000); 
+      setVisibleItemsCount((prevCount) => prevCount + 10); // Show 10 more items
+      setIsLoading(false);
+    }, 3000);
   };
 
   return (
@@ -66,7 +66,7 @@ const Products = ({ ifExists, endpoint: { title, items } }) => {
         </div>
 
         {/* Show More Button or Loader */}
-        {visibleItemsCount < items.length && (
+        {visibleItemsCount < filteredItems.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={showMoreItems}

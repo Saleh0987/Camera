@@ -379,16 +379,20 @@ const story = {
 };
 
 const footerAPI = {
-  titles: [{title: "About Nike"}, {title: "Get Help"}, {title: "Company"}],
+  titles: [
+    {title: "About Photography"},
+    {title: "Get Help"},
+    {title: "Company"},
+  ],
   links: [
     [
-      {link: "About Nike"},
+      {link: "About Photography"},
       {link: "News"},
       {link: "Careers"},
       {link: "Investors"},
       {link: "Prupose"},
       {link: "Sustainability"},
-      {link: "Nike Jouneral"},
+      {link: "Photography Jouneral"},
     ],
     [
       {link: "Get Help"},
