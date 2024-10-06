@@ -86,8 +86,8 @@ const VisaOption = () => {
       return false;
     }
 
-    if (!loggedInUser || !loggedInUser.address || !loggedInUser.city) {
-      toast.error("Please ensure your address and city are provided.");
+    if (!loggedInUser || !loggedInUser.address || !loggedInUser.city || !loggedInUser.phone) {
+      toast.error("Please ensure your address, city and phone are provided.");
       return false;
     } 
 

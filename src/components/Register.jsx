@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { SiNamecheap } from 'react-icons/si';
@@ -9,21 +9,25 @@ import { FaPhoneVolume, FaEye, FaRegEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { FiLoader } from 'react-icons/fi';
+import { useGoogleLogin } from '@react-oauth/google'; 
+import axios from 'axios';
+import { setLoadUserFav } from '../app/FavSlice';
+import { setLoadUserCart } from '../app/CartSlice'
+import { useDispatch } from 'react-redux';
+
 
 const Register = () => {
-  const [loading, setLoading] = useState(false);
+ const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRePassword, setShowRePassword] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [user, setUser] = useState([]);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleRePasswordVisibility = () => {
-    setShowRePassword(!showRePassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const toggleRePasswordVisibility = () => setShowRePassword(!showRePassword);
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
@@ -34,8 +38,7 @@ const Register = () => {
       .email('Invalid email format')
       .required('Email is required'),
     password: Yup.string()
-      .matches(/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,10}$/,
-        'Password must be 6-10 characters long, start with an uppercase letter, and include at least one number')
+      .matches(/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,10}$/, 'Password must be 6-10 characters long, start with an uppercase letter, and include at least one number')
       .required('Password is required'),
     rePassword: Yup.string()
       .oneOf([Yup.ref('password')], 'Passwords must match')
@@ -46,16 +49,11 @@ const Register = () => {
   });
 
   const formik = useFormik({
-    initialValues: {
-      name: '',
-      email: '',
-      password: '',
-      rePassword: '',
-      phone: '',
-    },
+    initialValues: { name: '', email: '', password: '', rePassword: '', phone: '' },
     validationSchema,
     onSubmit: () => {
-      let users = JSON.parse(localStorage.getItem('users')) || [];
+      let usersData = localStorage.getItem('users');
+      let users = usersData ? JSON.parse(usersData) : [];
       const existingUser = users.find(user => user.email === formik.values.email);
 
       if (existingUser) {
@@ -70,25 +68,71 @@ const Register = () => {
         phone: formik.values.phone,
       };
       setLoading(true);
-      
+
       setTimeout(() => {
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
         setLoading(false);
         formik.resetForm();
         setEmailError('');
-        navigate('/login');
-        toast.success(`Registration Successfully`);
+        navigate('/');
+        toast.success('Registration Successfully');
       }, 3000);
     },
   });
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      setLoadingGoogle(true);
+      setUser(codeResponse);
+    },
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
+  useEffect(() => {
+    if (user && user.access_token) {
+      axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+          Accept: 'application/json',
+        },
+      })
+        .then((res) => {
+          setUser(res.data);
+          let usersData = localStorage.getItem('users');
+          let users = usersData ? JSON.parse(usersData) : [];
+          const existingUser = users.find(user => user.email === res.data.email);
+
+          if (existingUser) {
+            toast.error('This email is already registered with Google.');
+            return;
+          }
+
+          const newUser = {
+            name: res.data.name,
+            email: res.data.email,
+            token: res.data.id,
+          };
+
+          users.push(newUser);
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('loggedInUser', JSON.stringify(newUser));
+          toast.success('Registration Successful with Google');
+          dispatch(setLoadUserCart(newUser));
+          dispatch(setLoadUserFav(newUser));
+          navigate('/');
+        })
+        .finally(() => setLoadingGoogle(false));
+    }
+  }, [user, navigate, dispatch]);
 
   return (
     <div className="nike-container sm:py-4 min-h-[70vh] sm:h-auto flex items-center justify-center">
       <div className="bg-white rounded-md p-4 w-[60%] sm:nike-container lg:w-[80%] shadow-2xl">
         <h1 className="text-gray-800 font-bold text-center text-2xl mb-8">Register</h1>
         <form onSubmit={formik.handleSubmit} className='w-[80%] sm:w-[100%] mx-auto'>
-          {/* Name */}
+          {/* Form fields... */}
+             {/* Name */}
           <div className="flex items-center border-2 mb-4 py-2 px-3 rounded-2xl text-black">
             <SiNamecheap className="text-[18px]" />
             <input
@@ -195,7 +239,8 @@ const Register = () => {
             {formik.errors.phone}
           </div>}
 
-          <button
+
+           <button
             type="submit"
             className="block w-full bg-indigo-600 mt-5 py-2 rounded-2xl hover:bg-indigo-700 
             hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2"
@@ -203,6 +248,17 @@ const Register = () => {
           >
             {loading ? <FiLoader className="inline-block animate-spin text-white text-xl" />
               : "Sign Up"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => login()}
+            className="block w-full bg-red-600 mt-5 py-2 rounded-2xl hover:bg-red-700 
+            hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2"
+            disabled={loadingGoogle}
+          >
+            {loadingGoogle ? <FiLoader className="inline-block animate-spin text-white text-xl" />
+              : "Sign Up With Google"}
           </button>
           
           <div className="text-center mt-4">

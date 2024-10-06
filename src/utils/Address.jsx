@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
 import * as Yup from 'yup';
 import VisaOption from './VisaOption';
 
 const Address = () => {
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
+
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -14,6 +16,7 @@ const Address = () => {
       const UserProfile = JSON.parse(loggedInUser);
       setAddress(UserProfile.address || '');
       setCity(UserProfile.city || '');
+      setPhone(UserProfile.phone || '');
     }
   }, []);
 
@@ -23,7 +26,7 @@ const Address = () => {
 
   const handleSaveClick = (values) => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    const updatedUser = { ...loggedInUser, address: values.address, city: values.city };
+    const updatedUser = { ...loggedInUser, address: values.address, city: values.city, phone: values.phone };
     
     // Update loggedInUser in localStorage
     localStorage.setItem('loggedInUser', JSON.stringify(updatedUser));
@@ -37,27 +40,30 @@ const Address = () => {
 
     setAddress(values.address);
     setCity(values.city);
+    setPhone(values.phone);
     setIsEditing(false);
   };
 
-  const validationSchema = Yup.object({
+  const validationSchema = Yup.object().shape({
     address: Yup.string()
       .required('Address is required')
       .min(15, 'Address must be at least 15 characters long'),
     city: Yup.string()
       .required('City is required')
-      .min(5, 'City must be at least 5 characters long')
+      .min(5, 'City must be at least 5 characters long'),
+    phone: Yup.string()
+      .matches(/^(002|\+2)?01[0125][0-9]{8}$/, 'Invalid Egyptian phone number')
+      .required('Phone number is required'),
   });
 
   return (
     <div className="px-3 sm:w-full md:w-5/12">
       <div className="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
         <Formik
-          initialValues={{ address, city }}
+          initialValues={{ address, city, phone }}
           enableReinitialize={true}
           validationSchema={validationSchema}
-          onSubmit={handleSaveClick}
-        >
+          onSubmit={handleSaveClick}>
           {({ isSubmitting }) => (
             <Form>
               <div className="w-full flex mb-3 items-center">
@@ -82,7 +88,7 @@ const Address = () => {
                   <button onClick={handleEditClick} type="button" className="ml-2 text-blue-500 hover:text-blue-700">Edit</button>
                 )}
               </div>
-              <div className="w-full flex items-center">
+              <div className="w-full flex mb-3 items-center">
                 <div className="w-32">
                   <span className="text-gray-600 font-semibold">City :</span>
                 </div>
@@ -98,6 +104,26 @@ const Address = () => {
                     </div>
                   ) : (
                     <span>{city}</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="w-full flex items-center">
+                <div className="w-32">
+                  <span className="text-gray-600 font-semibold">Phone :</span>
+                </div>
+                <div className="flex-grow pl-3">
+                  {isEditing ? (
+                    <div>
+                      <Field
+                        type="text"
+                        name="phone"
+                        className="border p-1 w-full"
+                      />
+                      <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
+                    </div>
+                  ) : (
+                    <span>{phone}</span>
                   )}
                 </div>
               </div>
