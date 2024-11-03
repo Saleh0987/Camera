@@ -14,6 +14,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Toaster position='top-center' reverseOrder={false} />
     <App />
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
   </GoogleOAuthProvider>  
 )

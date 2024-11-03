@@ -10,7 +10,8 @@ const Footer = ({footerAPI: {titles, links}}) => {
             {links.map((list, i) => (
               <ul key={i} className='flex flex-col items-center justify-center gap-1'>
                 {list.map((link, i) => (
-                  <li key={i} className='text-sm sm:text-xs cursor-pointer hover:opacity-40 first:text-white/100 first:uppercase first:text-lg first:font-semibold'>
+                  <li key={i} className='text-sm sm:text-xs cursor-pointer hover:opacity-40 first:text-white/100 first:uppercase 
+                  first:text-lg first:font-semibold'>
                     {link.link}
                   </li>
                 ))}
